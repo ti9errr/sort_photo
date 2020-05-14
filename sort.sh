@@ -16,33 +16,33 @@ jfdi()
 	# Enable handling of filenames with spaces:
 	SAVEIFS=$IFS
 
-  for FILE in $(find $SOURCEDIR $MAXDEPTH -not -wholename "*._*" -iname "*.JPG" -or -iname "*.JPEG" -or -iname "*AVI" -or -iname "*MOV" -or -iname "*MP4" -or -iname "*PNG") 
+  	for FILE in $(find $SOURCEDIR $MAXDEPTH -not -wholename "*._*" -iname "*.JPG" -or -iname "*.JPEG" -or -iname "*AVI" -or -iname "*MOV" -or -iname "*MP4" -or -iname "*PNG") 
 	do
-	  INPUT=${FILE}
+		INPUT=${FILE}
 		DATE=($($EXIF_BIN/exiftool -CreateDate -FileModifyDate -DateTimeOriginal "$INPUT" | awk -F: '{ print $2 ":" $3 ":" $4 ":" $5 ":" $6 }' | sed 's/+[0-9]*//' | sort | grep -v 1970: | cut -d: -f1-6 | tr ':' ' ' | head -1) )
 	    
-    if [ ! -z "$DATE" ] 
+    	if [ ! -z "$DATE" ] 
 		then
-	    YEAR=${DATE[0]}
-    	MONTH=${DATE[1]}
+	    	YEAR=${DATE[0]}
+    		MONTH=${DATE[1]}
 
 			if [ "$DATE" == "null" ]
 			then
-        DATE=($($EXIF_BIN/exiftool -CreateDate -FileModifyDate -MediaCreateDate "$INPUT" | awk -F: '{ print $2 ":" $3 ":" $4 ":" $5 ":" $6 }' | sed 's/+[0-9]*//' | sort | grep -v 1970: | cut -d: -f1-6 | tr ':' ' ' | head -1) )
-      fi
+    	    	DATE=($($EXIF_BIN/exiftool -CreateDate -FileModifyDate -MediaCreateDate "$INPUT" | awk -F: '{ print $2 ":" $3 ":" $4 ":" $5 ":" $6 }' | sed 's/+[0-9]*//' | sort | grep -v 1970: | cut -d: -f1-6 | tr ':' ' ' | head -1) )
+      		fi
 	
-	    if [ -z "$DATE" ] || [ "$DATE" == "null" ] # If exif extraction failed
-    	then
-	      DATE=$(stat -f "%Sm" -t %F "${INPUT}" | awk '{print $1}'| sed 's/-/:/g')
+	    	if [ -z "$DATE" ] || [ "$DATE" == "null" ] # If exif extraction failed
+    		then
+	    		DATE=$(stat -f "%Sm" -t %F "${INPUT}" | awk '{print $1}'| sed 's/-/:/g')
 			fi
 		
-    	if [ "$YEAR" -gt 0 ] & [ "$MONTH" -gt 0 ]
-    	then  	
-			  OUTPUT_DIRECTORY=${DESTDIR}/${YEAR}/${YEAR}${MONTH}
+    		if [ "$YEAR" -gt 0 ] & [ "$MONTH" -gt 0 ]
+    		then  	
+				OUTPUT_DIRECTORY=${DESTDIR}/${YEAR}/${YEAR}${MONTH}
 		    	
 				mkdir -pv ${OUTPUT_DIRECTORY}
 
-			  OUTPUT=${OUTPUT_DIRECTORY}/$(basename ${INPUT})
+				OUTPUT=${OUTPUT_DIRECTORY}/$(basename ${INPUT})
 
 				if [ -e "$OUTPUT" ] && ! cmp -s "$INPUT" "$OUTPUT"
 				then
@@ -51,17 +51,17 @@ jfdi()
 					#echo "Moving '$INPUT' to $OUTPUT"
 					rsync -ah --progress "$INPUT" "$OUTPUT"
 
-				  if ! cmp -s "$INPUT" "$OUTPUT"
-				  then
-  					echo "WARNING: copying failed somehow, will not delete original '$INPUT'"
-	  			else
- 		  			rm -f "$INPUT"
-			  	fi
+					if ! cmp -s "$INPUT" "$OUTPUT"
+					then
+  						echo "WARNING: copying failed somehow, will not delete original '$INPUT'"
+	  				else
+ 		  				rm -f "$INPUT"
+			  		fi
 
 				fi
 
 			else
-  			echo "WARNING: '$INPUT' doesn't contain date."
+  				echo "WARNING: '$INPUT' doesn't contain date."
 			fi
 
 		else
