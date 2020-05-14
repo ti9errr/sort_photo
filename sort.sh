@@ -2,16 +2,6 @@
 
 EXIF_BIN=/volume2/share/sys/photo/exiftool/bin
 
-# activate debugging from here
-#set -o xtrace
-#set -o verbose
-
-# Improve error handling
-set -o errexit
-set -o pipefail
-
-
-
 jfdi()
 {
 
