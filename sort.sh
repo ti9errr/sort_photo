@@ -13,7 +13,7 @@ jfdi()
     
     MAXDEPTH='-maxdepth 1' #Search only in directory
 
-	# Enable handling of filenames with spaces:
+	# Enable handling of filenames with spaces
 	SAVEIFS=$IFS
 
   	for FILE in $(find $SOURCEDIR $MAXDEPTH -not -wholename "*._*" -iname "*.JPG" -or -iname "*.JPEG" -or -iname "*AVI" -or -iname "*MOV" -or -iname "*MP4" -or -iname "*PNG") 
